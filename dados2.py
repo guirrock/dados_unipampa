@@ -92,3 +92,75 @@ chart4 = alt.Chart(df_dipl_ano).mark_line(point=True).encode(
 
 st.altair_chart(chart4)
 
+# GRÁFICO 4 - Proporção de Diplomados por Curso
+st.subheader("🎯 Proporção de Diplomados por Curso")
+
+df_diplomados = df[df["Status"] == "Diplomado"]
+df_totais = df.groupby("Curso")["Matricula"].count().reset_index(name="Total")
+df_diplomados_contagem = df_diplomados.groupby("Curso")["Matricula"].count().reset_index(name="Diplomados")
+
+df_proporcao = pd.merge(df_totais, df_diplomados_contagem, on="Curso", how="left").fillna(0)
+df_proporcao["Proporcao_Diplomados (%)"] = (df_proporcao["Diplomados"] / df_proporcao["Total"]) * 100
+
+chart4 = alt.Chart(df_proporcao).mark_bar().encode(
+    x="Curso:N",
+    y=alt.Y("Proporcao_Diplomados (%):Q"),
+    tooltip=["Curso", "Proporcao_Diplomados (%)"]
+).properties(width=700, height=400)
+
+st.altair_chart(chart4)
+
+# GRÁFICO 5 - Evolução anual: ingressantes, diplomados e evadidos
+st.subheader("📈 Evolução Anual: Ingressantes, Diplomados e Evadidos")
+
+df["Ano"] = df["Ano_Ingresso"]
+
+evolucao = df.groupby(["Ano", "Status"]).size().reset_index(name="Total")
+chart5 = alt.Chart(evolucao).mark_line(point=True).encode(
+    x="Ano:O",
+    y="Total:Q",
+    color="Status:N",
+    tooltip=["Ano", "Status", "Total"]
+).properties(width=700, height=400)
+
+st.altair_chart(chart5)
+
+# GRÁFICO 6 - Tempo médio até diplomação
+st.subheader("🎓 Tempo Médio até Diplomação (em semestres)")
+
+df_tempo_diploma = df[df["Status"] == "Diplomado"].groupby("Curso")["Tempo_ate_evasao"].mean().reset_index()
+chart6 = alt.Chart(df_tempo_diploma).mark_bar().encode(
+    x="Curso:N",
+    y=alt.Y("Tempo_ate_evasao:Q", title="Tempo Médio (semestres)"),
+    tooltip=["Curso", "Tempo_ate_evasao"]
+).properties(width=700, height=400)
+
+st.altair_chart(chart6)
+
+# GRÁFICO 7 - Distribuição por Semestre de Ingresso
+st.subheader("🗓️ Distribuição de Ingressantes por Semestre")
+
+df_semestres = df.groupby("Semestre_Ingresso").size().reset_index(name="Total")
+chart7 = alt.Chart(df_semestres).mark_bar().encode(
+    x=alt.X("Semestre_Ingresso:N", title="Semestre"),
+    y=alt.Y("Total:Q", title="Número de Alunos"),
+    tooltip=["Semestre_Ingresso", "Total"]
+).properties(width=500, height=300)
+
+st.altair_chart(chart7)
+
+# GRÁFICO 8 - Comparativo entre modalidades
+st.subheader("🌓 Comparativo entre Modalidades (Integral vs Noturno)")
+
+# Supondo que a modalidade esteja no nome do curso
+df["Modalidade"] = df["Curso"].apply(lambda x: "Integral" if "INTEGRAL" in x.upper() else ("Noturno" if "NOTURNO" in x.upper() else "Outro"))
+
+df_mod = df.groupby(["Modalidade", "Status"]).size().reset_index(name="Total")
+chart8 = alt.Chart(df_mod).mark_bar().encode(
+    x="Modalidade:N",
+    y="Total:Q",
+    color="Status:N",
+    tooltip=["Modalidade", "Status", "Total"]
+).properties(width=700, height=400)
+
+st.altair_chart(chart8)
