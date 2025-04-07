@@ -35,6 +35,7 @@ df_filtros = df[
 st.subheader("📊 Quantidade de Alunos por Período de Ingresso  (2014-2025)")
 
 df_ingressos = df_filtros.groupby(["Ano_Ingresso", "Semestre_Ingresso"]).size().reset_index(name="Total")
+df_ingressos = df_ingressos[df_ingressos["Ano_Ingresso"] >= 2014]  # 👈 Filtra apenas anos de 2014 em diante
 df_ingressos["Periodo"] = df_ingressos["Ano_Ingresso"].astype(str) + "/" + df_ingressos["Semestre_Ingresso"].astype(str)
 
 chart1 = alt.Chart(df_ingressos).mark_bar().encode(
