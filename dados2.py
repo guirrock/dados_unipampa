@@ -152,23 +152,3 @@ chart8 = alt.Chart(df_semestres).mark_bar().encode(
 ).properties(width=500, height=300)
 
 st.altair_chart(chart8)
-
-# GRÁFICO 9 - Comparativo entre modalidades
-
-st.subheader("📈 Evolução Anual: Ingressantes, Diplomados e Desistentes (2014+)")
-
-# Filtra apenas dados a partir de 2014
-df_evolucao = df[df["Ano_Ingresso"] >= 2014]
-
-# Agrupa por ano de ingresso e status
-df_evolucao_grouped = df_evolucao.groupby(["Ano_Ingresso", "Status"]).size().reset_index(name="Total")
-
-# Gráfico de linhas
-chart9 = alt.Chart(df_evolucao_grouped).mark_line(point=True).encode(
-    x=alt.X("Ano_Ingresso:O", title="Ano de Ingresso"),
-    y=alt.Y("Total:Q"),
-    color=alt.Color("Status:N"),
-    tooltip=["Ano_Ingresso", "Status", "Total"]
-).properties(width=700, height=400)
-
-st.altair_chart(chart9)
