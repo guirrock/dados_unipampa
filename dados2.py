@@ -3,7 +3,7 @@ import pandas as pd
 import altair as alt
 
 # Título
-st.title("🎓 Painel de Dados dos Cursos de Graduação")
+st.title("🎓 Painel de Dados dos Cursos de Graduação (2014-2025)")
 
 # Carrega os dados
 df = pd.read_csv("dados_transformados_atualizados.csv")  # Novo CSV com coluna 'Status' atualizada
@@ -32,7 +32,7 @@ df_filtros = df[
 ]
 
 # GRÁFICO 1 - Quantidade de alunos por período de ingresso
-st.subheader("📊 Alunos por Período de Ingresso  (2014-2025)")
+st.subheader("📊 Alunos por Período de Ingresso")
 
 df_ingressos = df_filtros.groupby(["Ano_Ingresso", "Semestre_Ingresso"]).size().reset_index(name="Total")
 df_ingressos = df_ingressos[df_ingressos["Ano_Ingresso"] >= 2014]  # 👈 Filtra apenas anos de 2014 em diante
@@ -47,7 +47,7 @@ chart1 = alt.Chart(df_ingressos).mark_bar().encode(
 st.altair_chart(chart1)
 
 # GRÁFICO 2 - Distribuição de Status por Curso
-st.subheader("📘 Distribuição de Status por Curso  (2014-2025)")
+st.subheader("📘 Distribuição de Status por Curso")
 
 df_status = df_filtros.groupby(["Curso", "Status"]).size().reset_index(name="Total")
 
