@@ -154,24 +154,32 @@ st.altair_chart(chart8)
 
 # GRÁFICO 9 - Comparativo entre modalidades
 
-st.subheader("🏫 Comparativo entre Modalidades (Integral vs Noturno)")
+st.subheader("📉 Taxa de Desistência por Modalidade")
 
-# Considera apenas os diplomados
-df_diplomados = df[df["Status"] == "Diplomado"].copy()
+# Cria a coluna 'Modalidade' a partir do nome do curso
+df['Modalidade'] = df['Curso'].apply(
+    lambda x: 'Integral' if 'INTEGRAL' in x.upper() else ('Noturno' if 'NOTURNO' in x.upper() else 'Outro')
+)
 
-# Extrai Curso Base e Modalidade a partir do nome do curso
-df_diplomados["Curso_Base"] = df_diplomados["Curso"].str.extract(r"^(.*?)(?: - .*)?$")[0].str.strip()
-df_diplomados["Modalidade"] = df_diplomados["Curso"].str.extract(r"- (INTEGRAL|NOTURNO)$", expand=False)
-df_diplomados["Modalidade"] = df_diplomados["Modalidade"].fillna("Única")  # cursos que não têm divisão
+# Garante que temos apenas os dados após 2014
+df_desist = df[df["Ano_Ingresso"] >= 2014]
 
-# Agrupa por curso base e modalidade
-df_mod_grouped = df_diplomados.groupby(["Curso_Base", "Modalidade"]).size().reset_index(name="Total")
+# Agrupa por curso e modalidade
+df_modal = df_desist.groupby(["Curso", "Modalidade"])["Status"].value_counts().unstack(fill_value=0).reset_index()
 
-chart9 = alt.Chart(df_mod_grouped).mark_bar().encode(
-    x=alt.X("Curso_Base:N", title="Curso"),
-    y=alt.Y("Total:Q", title="Diplomados"),
-    color=alt.Color("Modalidade:N", legend=alt.Legend(title="Modalidade")),
-    tooltip=["Curso_Base", "Modalidade", "Total"]
+# Calcula a taxa de desistência
+df_modal["Ingressantes"] = df_modal.get("Ativo", 0) + df_modal.get("Diplomado", 0) + df_modal.get("Desistência", 0)
+df_modal["Taxa Desistência (%)"] = (df_modal.get("Desistência", 0) / df_modal["Ingressantes"]) * 100
+
+# Filtra só as modalidades conhecidas
+df_modal = df_modal[df_modal["Modalidade"].isin(["Integral", "Noturno"])]
+
+# Gráfico
+chart9 = alt.Chart(df_modal).mark_bar().encode(
+    x=alt.X("Curso:N", sort="-y"),
+    y=alt.Y("Taxa Desistência (%):Q"),
+    color="Modalidade:N",
+    tooltip=["Curso", "Modalidade", "Taxa Desistência (%)"]
 ).properties(width=700, height=400)
 
 st.altair_chart(chart9)
