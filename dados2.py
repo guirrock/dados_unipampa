@@ -32,7 +32,7 @@ df_filtros = df[
 ]
 
 # GRÁFICO 1 - Quantidade de alunos por período de ingresso
-st.subheader("📊 Quantidade de Alunos por Período de Ingresso")
+st.subheader("📊 Quantidade de Alunos por Período de Ingresso  (2014-2025)")
 
 df_ingressos = df_filtros.groupby(["Ano_Ingresso", "Semestre_Ingresso"]).size().reset_index(name="Total")
 df_ingressos["Periodo"] = df_ingressos["Ano_Ingresso"].astype(str) + "/" + df_ingressos["Semestre_Ingresso"].astype(str)
@@ -46,7 +46,7 @@ chart1 = alt.Chart(df_ingressos).mark_bar().encode(
 st.altair_chart(chart1)
 
 # GRÁFICO 2 - Distribuição de Status por Curso
-st.subheader("📘 Distribuição de Status por Curso")
+st.subheader("📘 Distribuição de Status por Curso  (2014-2025)")
 
 df_status = df_filtros.groupby(["Curso", "Status"]).size().reset_index(name="Total")
 
@@ -91,6 +91,3 @@ chart4 = alt.Chart(df_dipl_ano).mark_line(point=True).encode(
 
 st.altair_chart(chart4)
 
-# TABELA FINAL
-st.subheader("📋 Tabela de Alunos (com filtros aplicados)")
-st.dataframe(df_filtros)
