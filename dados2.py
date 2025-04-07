@@ -151,16 +151,4 @@ chart8 = alt.Chart(df_semestres).mark_bar().encode(
     tooltip=["Semestre_Ingresso", "Total"]
 ).properties(width=500, height=300)
 
-df_ingressantes = df_filtros[df_filtros["Status"] == "Ativo"].copy()
-df_ingressantes["Periodo"] = df_ingressantes["Ano_Ingresso"].astype(str) + "/" + df_ingressantes["Semestre_Ingresso"].astype(str)
-
-ingressantes_por_periodo = df_ingressantes.groupby(["Curso", "Periodo"]).size().reset_index(name="Total")
-
-chart8 = alt.Chart(ingressantes_por_periodo).mark_bar().encode(
-    x=alt.X("Periodo:N", sort="ascending"),
-    y="Total:Q",
-    color="Curso:N",
-    tooltip=["Curso", "Periodo", "Total"]
-).properties(width=700, height=400)
-
 st.altair_chart(chart8)
