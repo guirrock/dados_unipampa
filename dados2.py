@@ -156,17 +156,22 @@ st.altair_chart(chart8)
 
 st.subheader("🏫 Comparativo entre Modalidades (Integral vs Noturno)")
 
-# Considera apenas diplomados
-df_mod = df[df["Status"] == "Diplomado"]
+# Considera apenas os diplomados
+df_diplomados = df[df["Status"] == "Diplomado"].copy()
 
-# Agrupa por curso e modalidade
-df_mod_grouped = df_mod.groupby(["Curso", "Modalidade"]).size().reset_index(name="Total")
+# Extrai Curso Base e Modalidade a partir do nome do curso
+df_diplomados["Curso_Base"] = df_diplomados["Curso"].str.extract(r"^(.*?)(?: - .*)?$")[0].str.strip()
+df_diplomados["Modalidade"] = df_diplomados["Curso"].str.extract(r"- (INTEGRAL|NOTURNO)$", expand=False)
+df_diplomados["Modalidade"] = df_diplomados["Modalidade"].fillna("Única")  # cursos que não têm divisão
+
+# Agrupa por curso base e modalidade
+df_mod_grouped = df_diplomados.groupby(["Curso_Base", "Modalidade"]).size().reset_index(name="Total")
 
 chart9 = alt.Chart(df_mod_grouped).mark_bar().encode(
-    x=alt.X("Curso:N", sort="-y", title="Curso"),
+    x=alt.X("Curso_Base:N", title="Curso"),
     y=alt.Y("Total:Q", title="Diplomados"),
     color=alt.Color("Modalidade:N", legend=alt.Legend(title="Modalidade")),
-    tooltip=["Curso", "Modalidade", "Total"]
+    tooltip=["Curso_Base", "Modalidade", "Total"]
 ).properties(width=700, height=400)
 
 st.altair_chart(chart9)
