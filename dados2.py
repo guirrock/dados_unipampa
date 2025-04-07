@@ -111,6 +111,8 @@ chart5 = alt.Chart(df_proporcao).mark_bar().encode(
 st.altair_chart(chart5)
 
 # GRÁFICO 6 - Evolução anual: ingressantes, diplomados e evadidos
+st.subheader("📈 Evolução Anual: Diplomados e Desistentes")
+
 # Considera apenas os que têm data de evasão (saída)
 df_saida_ano = df[df["Status"].isin(["Diplomado", "Desistente"])].copy()
 df_saida_ano["Ano_Evento"] = df_saida_ano["Periodo Evasao"].str.split("/").str[0].astype("Int64")
