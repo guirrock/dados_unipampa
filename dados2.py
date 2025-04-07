@@ -141,6 +141,7 @@ chart7 = alt.Chart(df_tempo_diploma).mark_bar().encode(
 st.altair_chart(chart7)
 
 # GRÁFICO 8 - Distribuição por Semestre de Ingresso
+
 st.subheader("🗓️ Distribuição de Ingressantes por Semestre")
 
 df_semestres = df.groupby("Semestre_Ingresso").size().reset_index(name="Total")
@@ -154,32 +155,20 @@ st.altair_chart(chart8)
 
 # GRÁFICO 9 - Comparativo entre modalidades
 
-st.subheader("📉 Taxa de Desistência por Modalidade")
+st.subheader("📈 Evolução Anual: Ingressantes, Diplomados e Desistentes (2014+)")
 
-# Cria a coluna 'Modalidade' a partir do nome do curso
-df['Modalidade'] = df['Curso'].apply(
-    lambda x: 'Integral' if 'INTEGRAL' in x.upper() else ('Noturno' if 'NOTURNO' in x.upper() else 'Outro')
-)
+# Filtra apenas dados a partir de 2014
+df_evolucao = df[df["Ano_Ingresso"] >= 2014]
 
-# Garante que temos apenas os dados após 2014
-df_desist = df[df["Ano_Ingresso"] >= 2014]
+# Agrupa por ano de ingresso e status
+df_evolucao_grouped = df_evolucao.groupby(["Ano_Ingresso", "Status"]).size().reset_index(name="Total")
 
-# Agrupa por curso e modalidade
-df_modal = df_desist.groupby(["Curso", "Modalidade"])["Status"].value_counts().unstack(fill_value=0).reset_index()
-
-# Calcula a taxa de desistência
-df_modal["Ingressantes"] = df_modal.get("Ativo", 0) + df_modal.get("Diplomado", 0) + df_modal.get("Desistência", 0)
-df_modal["Taxa Desistência (%)"] = (df_modal.get("Desistência", 0) / df_modal["Ingressantes"]) * 100
-
-# Filtra só as modalidades conhecidas
-df_modal = df_modal[df_modal["Modalidade"].isin(["Integral", "Noturno"])]
-
-# Gráfico
-chart9 = alt.Chart(df_modal).mark_bar().encode(
-    x=alt.X("Curso:N", sort="-y"),
-    y=alt.Y("Taxa Desistência (%):Q"),
-    color="Modalidade:N",
-    tooltip=["Curso", "Modalidade", "Taxa Desistência (%)"]
+# Gráfico de linhas
+chart9 = alt.Chart(df_evolucao_grouped).mark_line(point=True).encode(
+    x=alt.X("Ano_Ingresso:O", title="Ano de Ingresso"),
+    y=alt.Y("Total:Q"),
+    color=alt.Color("Status:N"),
+    tooltip=["Ano_Ingresso", "Status", "Total"]
 ).properties(width=700, height=400)
 
 st.altair_chart(chart9)
