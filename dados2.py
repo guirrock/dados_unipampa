@@ -115,7 +115,7 @@ st.subheader("📈 Evolução Anual: Ingressantes, Diplomados e Evadidos")
 
 df["Ano"] = df["Ano_Ingresso"]
 
-df_evolucao = df[df["Ano"]]
+df_evolucao = df[df["Ano"] >= 2006]
 
 evolucao = df_evolucao.groupby(["Ano", "Status"]).size().reset_index(name="Total")
 chart6 = alt.Chart(evolucao).mark_line(point=True).encode(
