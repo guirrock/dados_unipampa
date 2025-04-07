@@ -3,7 +3,7 @@ import pandas as pd
 import altair as alt
 
 # Título
-st.title("🎓 Painel de Dados dos Cursos de Graduação (2014-2025)")
+st.title("🎓 Painel de Dados dos Cursos de Graduação")
 
 # Carrega os dados
 df = pd.read_csv("dados_transformados_atualizados.csv")  # Novo CSV com coluna 'Status' atualizada
@@ -113,18 +113,19 @@ st.altair_chart(chart5)
 # GRÁFICO 6 - Evolução anual: ingressantes, diplomados e evadidos
 st.subheader("📈 Evolução Anual: Ingressantes, Diplomados e Evadidos")
 
-df["Ano"] = df["Ano_Ingresso"]
+df["Ano_Evento"] = df["Ano_Ingresso"]  # default para Ativos
 
-df_evolucao = df[df["Ano"] >= 2006]
+df.loc[df["Status"].isin(["Diplomado", "Desistente"]), "Ano_Evento"] = df["Periodo Evasao"].str.split("/").str[0].astype("Int64")
 
-evolucao = df_evolucao.groupby(["Ano", "Status"]).size().reset_index(name="Total")
+df_evolucao = df[df["Ano_Evento"].notna() & (df["Ano_Evento"] >= 2006)]
+evolucao = df_evolucao.groupby(["Ano_Evento", "Status"]).size().reset_index(name="Total")
+
 chart6 = alt.Chart(evolucao).mark_line(point=True).encode(
-    x="Ano:O",
-    y="Total:Q",
+    x=alt.X("Ano_Evento:O", title="Ano"),
+    y=alt.Y("Total:Q", title="Número de Alunos"),
     color="Status:N",
-    tooltip=["Ano", "Status", "Total"]
+    tooltip=["Ano_Evento", "Status", "Total"]
 ).properties(width=700, height=400)
-
 st.altair_chart(chart6)
 
 # GRÁFICO 7 - Tempo médio até diplomação
