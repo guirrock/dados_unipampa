@@ -135,7 +135,7 @@ st.subheader("🚪 Desistências por Ano")
 
 df_evasoes = df_filtros[df_filtros["Status"] == "Desistente"].copy()
 df_evasoes["Ano_Evasao"] = df_evasoes["Periodo Evasao"].str.split("/").str[0].astype("Int64")
-df_evasoes = df_evasoes[df_evasoes["Ano_Evasao"] >= 2010]  # Se quiser restringir a partir de um ano
+df_evasoes = df_evasoes[df_evasoes["Ano_Evasao"] >= 2006]  # Se quiser restringir a partir de um ano
 
 evasoes_por_ano = df_evasoes.groupby(["Curso", "Ano_Evasao"]).size().reset_index(name="Desistências")
 
