@@ -3,7 +3,7 @@ import pandas as pd
 import altair as alt
 
 # Título
-st.title("🎓 Painel de Acompanhamento dos Cursos de Graduação")
+st.title("🎓 Painel de Dados dos Cursos de Graduação")
 
 # Carrega os dados
 df = pd.read_csv("dados_transformados_atualizados.csv")  # Novo CSV com coluna 'Status' atualizada
