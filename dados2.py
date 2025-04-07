@@ -111,21 +111,19 @@ chart5 = alt.Chart(df_proporcao).mark_bar().encode(
 st.altair_chart(chart5)
 
 # GRÁFICO 6 - Evolução anual: ingressantes, diplomados e evadidos
-st.subheader("📈 Evolução Anual: Ingressantes, Diplomados e Evadidos")
+# Considera apenas os que têm data de evasão (saída)
+df_saida_ano = df[df["Status"].isin(["Diplomado", "Desistente"])].copy()
+df_saida_ano["Ano_Evento"] = df_saida_ano["Periodo Evasao"].str.split("/").str[0].astype("Int64")
 
-df["Ano_Evento"] = df["Ano_Ingresso"]  # default para Ativos
+evolucao_saida = df_saida_ano.groupby(["Ano_Evento", "Status"]).size().reset_index(name="Total")
 
-df.loc[df["Status"].isin(["Diplomado", "Desistente"]), "Ano_Evento"] = df["Periodo Evasao"].str.split("/").str[0].astype("Int64")
-
-df_evolucao = df[df["Ano_Evento"].notna() & (df["Ano_Evento"] >= 2006)]
-evolucao = df_evolucao.groupby(["Ano_Evento", "Status"]).size().reset_index(name="Total")
-
-chart6 = alt.Chart(evolucao).mark_line(point=True).encode(
+chart6 = alt.Chart(evolucao_saida).mark_line(point=True).encode(
     x=alt.X("Ano_Evento:O", title="Ano"),
     y=alt.Y("Total:Q", title="Número de Alunos"),
     color="Status:N",
     tooltip=["Ano_Evento", "Status", "Total"]
 ).properties(width=700, height=400)
+
 st.altair_chart(chart6)
 
 # GRÁFICO 7 - Tempo médio até diplomação
