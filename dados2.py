@@ -151,3 +151,20 @@ chart8 = alt.Chart(df_semestres).mark_bar().encode(
 ).properties(width=500, height=300)
 
 st.altair_chart(chart8)
+
+
+# GRÁFICO 9 - Evasões por Ano
+st.subheader("🚪 Evasões por Ano")
+
+df_evasoes = df[df["Status"] == "Desistente"].copy()
+df_evasoes["Ano_Evasao"] = df_evasoes["Periodo Evasao"].str.split("/").str[0].astype("Int64")
+evasoes_por_ano = df_evasoes.groupby(["Curso", "Ano_Evasao"]).size().reset_index(name="Evasões")
+
+chart9 = alt.Chart(evasoes_por_ano).mark_line(point=True).encode(
+    x=alt.X("Ano_Evasao:O", title="Ano"),
+    y=alt.Y("Evasões:Q", title="Número de Evasões"),
+    color="Curso:N",
+    tooltip=["Curso", "Ano_Evasao", "Evasões"]
+).properties(width=700, height=400)
+
+st.altair_chart(chart9)
