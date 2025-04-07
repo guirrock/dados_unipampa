@@ -131,7 +131,7 @@ st.altair_chart(chart6)
 
 
 # GRÁFICO 9 - Desistências por Ano
-st.subheader("🚪 Desistências por Ano")
+st.subheader("🚪 Desistências por Ano e Curso")
 
 df_evasoes = df_filtros[df_filtros["Status"] == "Desistente"].copy()
 df_evasoes["Ano_Evasao"] = df_evasoes["Periodo Evasao"].str.split("/").str[0].astype("Int64")
