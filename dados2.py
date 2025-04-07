@@ -32,7 +32,7 @@ df_filtros = df[
 ]
 
 # GRÁFICO 1 - Quantidade de alunos por período de ingresso
-st.subheader("📊 Quantidade de Alunos por Período de Ingresso  (2014-2025)")
+st.subheader("📊 Alunos por Período de Ingresso  (2014-2025)")
 
 df_ingressos = df_filtros.groupby(["Ano_Ingresso", "Semestre_Ingresso"]).size().reset_index(name="Total")
 df_ingressos = df_ingressos[df_ingressos["Ano_Ingresso"] >= 2014]  # 👈 Filtra apenas anos de 2014 em diante
