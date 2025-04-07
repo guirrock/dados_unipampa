@@ -128,6 +128,25 @@ chart6 = alt.Chart(evolucao_saida).mark_line(point=True).encode(
 
 st.altair_chart(chart6)
 
+
+
+# GRÁFICO 9 - Desistências por Ano
+st.subheader("🚪 Desistências por Ano")
+
+df_evasoes = df_filtros[df_filtros["Status"] == "Desistente"].copy()
+df_evasoes["Ano_Evasao"] = df_evasoes["Periodo Evasao"].str.split("/").str[0].astype("Int64")
+df_evasoes = df_evasoes[df_evasoes["Ano_Evasao"] >= 2010]  # Se quiser restringir a partir de um ano
+
+evasoes_por_ano = df_evasoes.groupby(["Curso", "Ano_Evasao"]).size().reset_index(name="Desistências")
+
+chart9 = alt.Chart(evasoes_por_ano).mark_line(point=True).encode(
+    x=alt.X("Ano_Evasao:O", title="Ano"),
+    y=alt.Y("Desistências:Q", title="Número de Desistências"),
+    color="Curso:N",
+    tooltip=["Curso", "Ano_Evasao", "Desistências"]
+).properties(width=700, height=400)
+st.altair_chart(chart9)
+
 # GRÁFICO 7 - Tempo médio até diplomação
 st.subheader("🎓 Tempo Médio até Diplomação (em semestres)")
 
@@ -154,19 +173,3 @@ chart8 = alt.Chart(df_semestres).mark_bar().encode(
 st.altair_chart(chart8)
 
 
-# GRÁFICO 9 - Desistências por Ano
-st.subheader("🚪 Desistências por Ano")
-
-df_evasoes = df_filtros[df_filtros["Status"] == "Desistente"].copy()
-df_evasoes["Ano_Evasao"] = df_evasoes["Periodo Evasao"].str.split("/").str[0].astype("Int64")
-df_evasoes = df_evasoes[df_evasoes["Ano_Evasao"] >= 2010]  # Se quiser restringir a partir de um ano
-
-evasoes_por_ano = df_evasoes.groupby(["Curso", "Ano_Evasao"]).size().reset_index(name="Desistências")
-
-chart9 = alt.Chart(evasoes_por_ano).mark_line(point=True).encode(
-    x=alt.X("Ano_Evasao:O", title="Ano"),
-    y=alt.Y("Desistências:Q", title="Número de Desistências"),
-    color="Curso:N",
-    tooltip=["Curso", "Ano_Evasao", "Desistências"]
-).properties(width=700, height=400)
-st.altair_chart(chart9)
