@@ -63,7 +63,8 @@ st.altair_chart(chart1)
 
 st.subheader("🗓️ Distribuição de Ingressantes por Semestre")
 
-df_semestres = df.groupby("Semestre_Ingresso").size().reset_index(name="Total")
+df_semestres = df_filtros.groupby("Semestre_Ingresso").size().reset_index(name="Total")
+
 chart8 = alt.Chart(df_semestres).mark_bar().encode(
     x=alt.X("Semestre_Ingresso:N", title="Semestre"),
     y=alt.Y("Total:Q", title="Número de Alunos"),
