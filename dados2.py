@@ -47,6 +47,31 @@ chart1 = alt.Chart(df_ingressos).mark_bar().encode(
 
 st.altair_chart(chart1)
 
+# GRÁFICO 7 - Tempo médio até diplomação
+#st.subheader("🎓 Tempo Médio até Diplomação (em semestres)")
+
+#df_tempo_diploma = df[df["Status"] == "Diplomado"].groupby("Curso")["Tempo_ate_evasao"].mean().reset_index()
+#chart7 = alt.Chart(df_tempo_diploma).mark_bar().encode(
+#    x="Curso:N",
+#    y=alt.Y("Tempo_ate_evasao:Q", title="Tempo Médio (semestres)"),
+#    tooltip=["Curso", "Tempo_ate_evasao"]
+#).properties(width=700, height=400)
+
+#st.altair_chart(chart7)
+
+# GRÁFICO 8 - Distribuição por Semestre de Ingresso
+
+st.subheader("🗓️ Distribuição de Ingressantes por Semestre")
+
+df_semestres = df.groupby("Semestre_Ingresso").size().reset_index(name="Total")
+chart8 = alt.Chart(df_semestres).mark_bar().encode(
+    x=alt.X("Semestre_Ingresso:N", title="Semestre"),
+    y=alt.Y("Total:Q", title="Número de Alunos"),
+    tooltip=["Semestre_Ingresso", "Total"]
+).properties(width=500, height=300)
+
+st.altair_chart(chart8)
+
 # GRÁFICO 2 - Distribuição de Status por Curso
 st.subheader("📘 Distribuição de Status por Curso")
 
@@ -148,29 +173,6 @@ chart9 = alt.Chart(evasoes_por_ano).mark_line(point=True).encode(
 ).properties(width=700, height=400)
 st.altair_chart(chart9)
 
-# GRÁFICO 7 - Tempo médio até diplomação
-st.subheader("🎓 Tempo Médio até Diplomação (em semestres)")
 
-df_tempo_diploma = df[df["Status"] == "Diplomado"].groupby("Curso")["Tempo_ate_evasao"].mean().reset_index()
-chart7 = alt.Chart(df_tempo_diploma).mark_bar().encode(
-    x="Curso:N",
-    y=alt.Y("Tempo_ate_evasao:Q", title="Tempo Médio (semestres)"),
-    tooltip=["Curso", "Tempo_ate_evasao"]
-).properties(width=700, height=400)
-
-st.altair_chart(chart7)
-
-# GRÁFICO 8 - Distribuição por Semestre de Ingresso
-
-st.subheader("🗓️ Distribuição de Ingressantes por Semestre")
-
-df_semestres = df.groupby("Semestre_Ingresso").size().reset_index(name="Total")
-chart8 = alt.Chart(df_semestres).mark_bar().encode(
-    x=alt.X("Semestre_Ingresso:N", title="Semestre"),
-    y=alt.Y("Total:Q", title="Número de Alunos"),
-    tooltip=["Semestre_Ingresso", "Total"]
-).properties(width=500, height=300)
-
-st.altair_chart(chart8)
 
 
